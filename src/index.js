@@ -43,28 +43,31 @@ class App extends React.Component {
 
   render() {
     const renderAll = this.state.filterLoans.map((c) => (
-      <li key={c.amount}>{c.amount}</li>
+      <li key={c.id}>{c.amount}</li>
     ));
 
     return (
       <div>
+        <h1>Select the interest rate</h1>
         {buttons.map(({ name, id }) => (
           <button
             key={id}
             value={name}
             onClick={this.handleClick.bind(this, name)}
           >
-            {name}
+            {Math.round(name * 10000) / 100}
           </button>
         ))}
-
-        <p>Loans {renderAll}</p>
-        <h3>Average amount for the intereste rate selected: </h3>
+        <h2>Loans</h2>
+        <p>{renderAll}</p>
+        <h3>Average amount for the interest rate selected: </h3>
         <p>
           {this.state.filterLoans.length === 0
             ? 'No loans found for this interest rate'
-            : this.state.filterLoans.reduce((a, b) => a + b.amount, 0) /
-              this.state.filterLoans.length}
+            : Math.round(
+                this.state.filterLoans.reduce((a, b) => a + b.amount, 0) /
+                  this.state.filterLoans.length
+              )}
         </p>
       </div>
     );
