@@ -1,0 +1,118 @@
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import axios from 'axios';
+
+const App = () => {
+  const [loans, setLoans] = useState([]);
+  const interestsJson = require('./interest.json');
+  //   const [loading, setLoading] = useState(false);
+  //   const [search, setSearch] = useState('');
+  //   const [filteredLoans, setFilteredLoans] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`/loans/marketplace`)
+      .then((res) => {
+        const loans = res.data;
+        setLoans(loans);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const target = loans;
+  const source = interestsJson.interests;
+  const returnedTarget = Object.assign(target, source);
+
+  return (
+    <div>
+      <div>Select interest rate</div>
+      <div>
+        {returnedTarget
+          .map((item) => (
+            <button key={item.id} value={item.interestRate}>
+              {item.interestRate}
+            </button>
+          ))
+          .sort()}
+      </div>
+      <div>
+        <ul>
+          {returnedTarget
+            .filter((mon) => mon.interestRate === 0.0699)
+            .map((filtered) => (
+              <li key={filtered.id}>{filtered.amount}</li>
+            ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.querySelector('#root'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import axios from 'axios';
+
+const App = () => {
+  const [loans, setLoans] = useState([]);
+  const interestsJson = require('./interest.json');
+
+  useEffect(() => {
+    axios
+      .get(`/loans/marketplace`)
+      .then((res) => {
+        const loans = res.data;
+        setLoans(loans);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const source = loans;
+  const target = interestsJson.interests;
+  const returnedTarget = target.concat(source);
+
+  return (
+    <div>
+      <label>
+        <div>Select interest rate</div>
+        {returnedTarget
+          //   .sort(
+          //     ({ interestRate: previousID }, { interestRate: currentID }) =>
+          //       previousID - currentID
+          //   )
+          .map((item) => (
+            <button key={item.id} value={item.interestRate}>
+              {item.interestRate}
+            </button>
+          ))}
+      </label>
+      <div>
+        <ul>
+          {returnedTarget.map((loan) => (
+            <li key={loan.id}>{loan.amount}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.querySelector('#root'));
