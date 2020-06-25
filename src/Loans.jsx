@@ -27,7 +27,9 @@ class App extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`/loans/marketplace`)
+      .get(
+        `https://cors-anywhere.herokuapp.com/https://api.zonky.cz/loans/marketplace`
+      )
       .then((res) => {
         const loans = res.data;
         this.setState({ loans, filterLoan: this.state.loans });
