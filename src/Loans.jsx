@@ -16,34 +16,25 @@ const buttons = [
   { id: '11', name: 0.1999 },
 ];
 
+const activeButtons = new Map();
+let filterLoans = [];
+
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       loans: [],
       filterLoans: [],
+      activeButtons: new Map(),
     };
+    this.wrapperRef = React.createRef();
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
-
-  //for local proxy, to be used .get(`/loans/marketplace`)
-  // or https://crossproxy.me/
 
   componentDidMount() {
     axios
-      .get(
-        `/loans/marketplace` //, {
-        //header: {
-        //'Access-Control-Allow-Origin': '*',
-        //     'Access-Control-Allow-Headers': 'Content-Type',
-        //     'Content-Type': 'application/json',
-        //     'Access-Control-Allow-Methods':
-        //       'HEAD, GET, POST, PUT, PATCH, DELETE, OPTIONS',
-        //   },
-        //   credentials: 'include',
-        //   mode: 'cors',
-        //   method: 'get',
-        //}}
-      )
+      .get(`/loans/marketplace`)
       .then((res) => {
         const loans = res.data;
         this.setState({ loans, filterLoan: this.state.loans });
@@ -51,18 +42,45 @@ class App extends React.Component {
       .catch((error) => {
         console.log(error.message);
       });
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
   }
 
   handleClick = (name) => {
     let filterLoans = [];
+
     if (name === 'All') {
       filterLoans = this.state.loans;
     } else {
-      filterLoans = this.state.loans.filter((f) => f.interestRate === name);
+      filterLoans = this.state.loans.filter(
+        (f) => f.interestRate === name || activeButtons.get(f.interestRate)
+      );
     }
+
+    if (activeButtons.get(name) === true) {
+      activeButtons.set(name, false);
+    } else {
+      activeButtons.set(name, true);
+    }
+
+    this.setState({ activeButtons });
 
     this.setState({ filterLoans });
   };
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+      filterLoans = [];
+      this.setState({ filterLoans });
+    }
+  }
 
   render() {
     const renderAll = this.state.filterLoans.map((c) => (
@@ -72,15 +90,18 @@ class App extends React.Component {
     return (
       <div className="container">
         <h1>Select the interest rate</h1>
-        {buttons.map(({ name, id }) => (
-          <button
-            key={id}
-            value={name}
-            onClick={this.handleClick.bind(this, name)}
-          >
-            {Math.round(name * 10000) / 100}
-          </button>
-        ))}
+        <div ref={this.wrapperRef} className="button">
+          {buttons.map(({ name, id }) => (
+            <button
+              key={id}
+              value={name}
+              onClick={this.handleClick.bind(this, name, id)}
+              className={activeButtons.get(name) ? 'button-active' : 'button'}
+            >
+              {Math.round(name * 10000) / 100}
+            </button>
+          ))}
+        </div>
         <h2>Loans made with the selected interest:</h2>
         <p>
           {renderAll.length === 0

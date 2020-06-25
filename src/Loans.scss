@@ -38,12 +38,19 @@ button {
   justify-content: center;
 
   &:hover {
-    background-color: rgb(219, 219, 219);
+    background-color: rgb(252, 238, 175);
     color: black;
   }
-  &:focus {
-    background-color: rgb(199, 198, 198);
-    color: black;
-    outline: none;
-  }
+}
+
+.button-active {
+  background-color: rgb(182, 151, 12);
+  color: rgb(22, 22, 22);
+  outline: none;
+}
+
+.button {
+  background-color: rgb(233, 198, 42);
+  color: rgb(0, 0, 0);
+  outline: none;
 }

@@ -7,9 +7,6 @@ module.exports = function (app) {
       target: 'https://api.zonky.cz',
       secure: false,
       changeOrigin: true,
-      // onProxyRes: function (proxyRes, req, res) {
-      //   proxyRes.headers['Access-Control-Allow-Origin'] = '*';
-      // },
     })
   );
 };
