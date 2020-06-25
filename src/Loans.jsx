@@ -30,21 +30,19 @@ class App extends React.Component {
 
   componentDidMount() {
     axios
-      .get(
-        `https://api.zonky.cz/loans/marketplace`
-        // {
-        //   header: {
-        //     'Access-Control-Allow-Origin': '*',
-        //     'Access-Control-Allow-Headers': 'Content-Type',
-        //     'Content-Type': 'application/json',
-        //     'Access-Control-Allow-Methods':
-        //       'HEAD, GET, POST, PUT, PATCH, DELETE, OPTIONS',
-        //   },
-        //   credentials: 'include',
-        //   mode: 'cors',
-        //   method: 'get',
-        // }
-      )
+      .get(`https://api.zonky.cz/loans/marketplace`, {
+        header: {
+          'Access-Control-Allow-Origin': '*',
+          //     'Access-Control-Allow-Headers': 'Content-Type',
+          //     'Content-Type': 'application/json',
+          //     'Access-Control-Allow-Methods':
+          //       'HEAD, GET, POST, PUT, PATCH, DELETE, OPTIONS',
+          //   },
+          //   credentials: 'include',
+          //   mode: 'cors',
+          //   method: 'get',
+        },
+      })
       .then((res) => {
         const loans = res.data;
         this.setState({ loans, filterLoan: this.state.loans });
